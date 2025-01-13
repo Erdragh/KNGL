@@ -23,6 +23,11 @@ kotlin {
     }
 
     nativeTarget.apply {
+        compilations.getByName("main") {
+            cinterops {
+                val libcurl by creating
+            }
+        }
         binaries {
             executable {
                 entryPoint = "dev.erdragh.main"
