@@ -39,8 +39,8 @@ fun main(args: Array<String>) {
     GL.bindVertexArray(vertexArrayId)
 
     val buffer = GL.genBuffers(1)
-    GL.bindBuffer(glew.GL_ARRAY_BUFFER.toUInt(), buffer)
-    GL.bufferData(glew.GL_ARRAY_BUFFER.toUInt(), arrayOf(-1.0f, -1.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f), GL_STATIC_DRAW.toUInt())
+    GL.bindBuffer(GL_ARRAY_BUFFER.toUInt(), buffer)
+    GL.bufferData(GL_ARRAY_BUFFER.toUInt(), arrayOf(-1.0f, -1.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f), GL_STATIC_DRAW.toUInt())
 
     val programId = Shaders.load("./src/shaders/vertex.glsl".toPath(), "./src/shaders/fragment.glsl".toPath())
 
@@ -50,10 +50,10 @@ fun main(args: Array<String>) {
         glUseProgram!!(programId)
 
         glEnableVertexAttribArray!!(0.toUInt())
-        GL.bindBuffer(glew.GL_ARRAY_BUFFER.toUInt(), buffer)
-        glVertexAttribPointer!!(0u, 3, gl.GL_FLOAT.toUInt(), glew.GL_FALSE.toUByte(), 0, null)
+        GL.bindBuffer(GL_ARRAY_BUFFER.toUInt(), buffer)
+        glVertexAttribPointer!!(0u, 3, GL_FLOAT.toUInt(), GL_FALSE.toUByte(), 0, null)
 
-        glDrawArrays(gl.GL_TRIANGLES.toUInt() as GLenum, 0, 3)
+        glDrawArrays(GL_TRIANGLES.toUInt(), 0, 3)
         glDisableVertexAttribArray!!(0.toUInt())
 
         glfwSwapBuffers(window)
