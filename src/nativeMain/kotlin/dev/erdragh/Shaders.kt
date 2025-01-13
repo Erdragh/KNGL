@@ -29,8 +29,8 @@ object Shaders {
         val vertexId = glCreateShader!!(GL_VERTEX_SHADER.toUInt())
         val fragmentId = glCreateShader!!(GL_FRAGMENT_SHADER.toUInt())
 
-        val vertexSource = FileSystem.SYSTEM.read(vertexPath, BufferedSource::readUtf8)
-        val fragmentSource = FileSystem.SYSTEM.read(fragmentPath, BufferedSource::readUtf8)
+        val vertexSource = FileSystem.SYSTEM.read(vertexPath, BufferedSource::readByteString)
+        val fragmentSource = FileSystem.SYSTEM.read(fragmentPath, BufferedSource::readByteString)
 
         println("Compiling shader from $vertexPath")
         GL.shaderSource(vertexId, 1, vertexSource)

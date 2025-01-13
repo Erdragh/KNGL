@@ -2,6 +2,7 @@ package dev.erdragh
 
 import glew.*
 import kotlinx.cinterop.*
+import okio.ByteString
 
 @OptIn(ExperimentalForeignApi::class)
 object GL {
@@ -38,12 +39,13 @@ object GL {
         glBufferData!!(type, data.size.toLong(), allocated, hint)
     }
 
-    fun shaderSource(id: UInt, p2: Int, source: String) = memScoped {
-        val cString = source.cstr.getPointer(this)
-        val doublePointer = alloc<CPointerVar<ByteVar>>()
-        doublePointer.value = cString
+    fun shaderSource(id: UInt, p2: Int, source: ByteString) = memScoped {
+        source.toByteArray().usePinned { pinned ->
+            val doublePointer = alloc<CPointerVar<ByteVar>>()
+            doublePointer.value = pinned.addressOf(0)
 
-        glShaderSource!!(id, p2, doublePointer.ptr, null)
+            glShaderSource!!(id, p2, doublePointer.ptr, null)
+        }
     }
     fun getShaderiv(id: UInt, what: UInt): Int = memScoped {
         val result: IntVar = alloc()
