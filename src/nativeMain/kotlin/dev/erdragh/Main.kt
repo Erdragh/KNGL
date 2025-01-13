@@ -4,10 +4,12 @@ import gl.*
 import glew.GLEW_OK
 import glew.glewInit
 import glfw.*
-import kotlinx.cinterop.*
+import kotlinx.cinterop.ExperimentalForeignApi
+import okio.Path.Companion.toPath
 
 @OptIn(ExperimentalForeignApi::class)
 fun main(args: Array<String>) {
+
     if (glfwInit() == 0) {
         throw RuntimeException("Failed to initialize GLFW")
     }
@@ -36,6 +38,10 @@ fun main(args: Array<String>) {
 
     val vertexArrayId = GL.genVertexArrays(1)
     GL.bindVertexArray(vertexArrayId)
+
+    // TODO: Construct triangle
+
+    val programId = Shaders.load("./src/shaders/vertex.glsl".toPath(), "./src/shaders/fragment.glsl".toPath())
 
     do {
         glClear((GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT).toUInt())

@@ -40,6 +40,7 @@ kotlin {
 
     sourceSets {
         nativeMain.dependencies {
+            implementation(libs.okio)
         }
     }
 }
