@@ -1,0 +1,5 @@
+headers = GL/glew.h
+headerFilter = GL/*
+
+compilerOpts.linux = -I/usr/include
+linkerOpts.linux = -L/usr/lib64 -lGLEW
