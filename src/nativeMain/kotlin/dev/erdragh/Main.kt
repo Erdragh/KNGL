@@ -14,8 +14,8 @@ fun main(args: Array<String>) {
     }
 
     glfwWindowHint(GLFW_SAMPLES, 4)
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3)
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3)
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4)
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6)
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE)
 
@@ -41,6 +41,8 @@ fun main(args: Array<String>) {
     val buffer = GL.genBuffers(1)
     GL.bindBuffer(GL_ARRAY_BUFFER.toUInt(), buffer)
     GL.bufferData(GL_ARRAY_BUFFER.toUInt(), arrayOf(-1.0f, -1.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f), GL_STATIC_DRAW.toUInt())
+    glVertexAttribPointer!!(0u, 3, GL_FLOAT.toUInt(), GL_FALSE.toUByte(), 0, null)
+    glEnableVertexAttribArray!!(0.toUInt())
 
     val programId = Shaders.load("./src/shaders/vertex.glsl".toPath(), "./src/shaders/fragment.glsl".toPath())
 
@@ -49,12 +51,10 @@ fun main(args: Array<String>) {
 
         glUseProgram!!(programId)
 
-        glEnableVertexAttribArray!!(0.toUInt())
-        GL.bindBuffer(GL_ARRAY_BUFFER.toUInt(), buffer)
-        glVertexAttribPointer!!(0u, 3, GL_FLOAT.toUInt(), GL_FALSE.toUByte(), 0, null)
-
+        GL.bindVertexArray(vertexArrayId)
         glDrawArrays(GL_TRIANGLES.toUInt(), 0, 3)
-        glDisableVertexAttribArray!!(0.toUInt())
+
+        glUseProgram!!(0u)
 
         glfwSwapBuffers(window)
         glfwPollEvents()
