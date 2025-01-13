@@ -1,10 +1,17 @@
 package dev.erdragh
 
 import gl.*
-import glew.GLEW_OK
-import glew.glewInit
+import gl.GL_COLOR_BUFFER_BIT
+import gl.GL_DEPTH_BUFFER_BIT
+import gl.GL_STATIC_DRAW
+import gl.GL_TRUE
+import gl.GLenum
+import gl.glClear
+import gl.glClearColor
+import glew.*
 import glfw.*
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.invoke
 import okio.Path.Companion.toPath
 
 @OptIn(ExperimentalForeignApi::class)
@@ -39,19 +46,32 @@ fun main(args: Array<String>) {
     val vertexArrayId = GL.genVertexArrays(1)
     GL.bindVertexArray(vertexArrayId)
 
-    // TODO: Construct triangle
+    val buffer = GL.genBuffers(1)
+    GL.bindBuffer(glew.GL_ARRAY_BUFFER.toUInt(), buffer)
+    GL.bufferData(glew.GL_ARRAY_BUFFER.toUInt(), arrayOf(-1.0f, -1.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f), GL_STATIC_DRAW.toUInt())
 
     val programId = Shaders.load("./src/shaders/vertex.glsl".toPath(), "./src/shaders/fragment.glsl".toPath())
 
     do {
         glClear((GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT).toUInt())
 
+        glUseProgram!!(programId)
+
+        glEnableVertexAttribArray!!(0.toUInt())
+        GL.bindBuffer(glew.GL_ARRAY_BUFFER.toUInt(), buffer)
+        glVertexAttribPointer!!(0u, 3, gl.GL_FLOAT.toUInt(), glew.GL_FALSE.toUByte(), 0, null)
+
+        gl.glDrawArrays(gl.GL_TRIANGLES.toUInt() as GLenum, 0, 3)
+        glDisableVertexAttribArray!!(0.toUInt())
+
         glfwSwapBuffers(window)
         glfwPollEvents()
     } while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
         glfwWindowShouldClose(window) == 0)
 
+    GL.deleteBuffers(1, buffer)
     GL.deleteVertexArrays(1, vertexArrayId)
+    glDeleteProgram!!(programId)
 
     glfwTerminate()
 }
