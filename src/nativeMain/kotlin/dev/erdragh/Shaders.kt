@@ -1,12 +1,5 @@
 package dev.erdragh
 
-import gl.*
-import gl.GL_COMPILE_STATUS
-import gl.GL_FALSE
-import gl.GL_FRAGMENT_SHADER
-import gl.GL_INFO_LOG_LENGTH
-import gl.GL_VERTEX_SHADER
-import gl.GLuint
 import glew.*
 import kotlinx.cinterop.*
 import okio.BufferedSource
@@ -59,7 +52,7 @@ object Shaders {
         glAttachShader!!(programId, fragmentId)
         glLinkProgram!!(programId)
 
-        result = GL.getProgramiv(programId, gl.GL_LINK_STATUS.toUInt())
+        result = GL.getProgramiv(programId, GL_LINK_STATUS.toUInt())
         printProgramLog(programId)
         if (result == GL_FALSE) throw IllegalStateException("Program Linking Failed")
 

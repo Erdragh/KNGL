@@ -1,13 +1,5 @@
 package dev.erdragh
 
-import gl.*
-import gl.GL_COLOR_BUFFER_BIT
-import gl.GL_DEPTH_BUFFER_BIT
-import gl.GL_STATIC_DRAW
-import gl.GL_TRUE
-import gl.GLenum
-import gl.glClear
-import gl.glClearColor
 import glew.*
 import glfw.*
 import kotlinx.cinterop.ExperimentalForeignApi
@@ -22,8 +14,8 @@ fun main(args: Array<String>) {
     }
 
     glfwWindowHint(GLFW_SAMPLES, 4)
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4)
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6)
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3)
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3)
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE)
 
@@ -61,7 +53,7 @@ fun main(args: Array<String>) {
         GL.bindBuffer(glew.GL_ARRAY_BUFFER.toUInt(), buffer)
         glVertexAttribPointer!!(0u, 3, gl.GL_FLOAT.toUInt(), glew.GL_FALSE.toUByte(), 0, null)
 
-        gl.glDrawArrays(gl.GL_TRIANGLES.toUInt() as GLenum, 0, 3)
+        glDrawArrays(gl.GL_TRIANGLES.toUInt() as GLenum, 0, 3)
         glDisableVertexAttribArray!!(0.toUInt())
 
         glfwSwapBuffers(window)

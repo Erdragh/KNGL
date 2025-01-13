@@ -1,9 +1,5 @@
 package dev.erdragh
 
-import gl.GL_FALSE
-import gl.GLenum
-import gl.GLfloat
-import gl.GLuint
 import glew.*
 import kotlinx.cinterop.*
 
