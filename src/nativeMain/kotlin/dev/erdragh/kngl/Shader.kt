@@ -1,4 +1,4 @@
-package dev.erdragh
+package dev.erdragh.kngl
 
 import glew.*
 import kotlinx.cinterop.*

@@ -1,6 +1,6 @@
-package dev.erdragh.debug
+package dev.erdragh.kngl.util
 
-import dev.erdragh.GL
+import dev.erdragh.kngl.GL
 import glew.*
 import kotlinx.cinterop.*
 

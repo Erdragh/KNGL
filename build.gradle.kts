@@ -32,7 +32,7 @@ kotlin {
         binaries {
             executable {
                 debuggable = true
-                entryPoint = "dev.erdragh.main"
+                entryPoint = "dev.erdragh.example.main"
             }
         }
     }

@@ -1,7 +1,8 @@
-package dev.erdragh
+package dev.erdragh.example
 
-import dev.erdragh.context.Context
-import dev.erdragh.debug.Quad
+import dev.erdragh.kngl.Shader
+import dev.erdragh.kngl.context.Context
+import dev.erdragh.kngl.util.Quad
 import glew.GL_COLOR_BUFFER_BIT
 import glew.GL_DEPTH_BUFFER_BIT
 import glew.glClear
