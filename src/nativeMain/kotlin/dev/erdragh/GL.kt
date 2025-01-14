@@ -31,8 +31,15 @@ object GL {
         id.value = bufferId
         glDeleteBuffers!!(p1, id.ptr)
     }
-    fun bufferData(type: GLenum, data: Array<GLfloat>, hint: GLenum) = memScoped {
+    fun bufferData(type: GLenum, data: FloatArray, hint: GLenum) = memScoped {
         val allocated = allocArray<FloatVar>(data.size)
+        for ((i, x) in data.withIndex()) {
+            allocated[i] = x
+        }
+        glBufferData!!(type, data.size.toLong(), allocated, hint)
+    }
+    fun bufferData(type: GLenum, data: UIntArray, hint: GLenum) = memScoped {
+        val allocated = allocArray<UIntVar>(data.size)
         for ((i, x) in data.withIndex()) {
             allocated[i] = x
         }

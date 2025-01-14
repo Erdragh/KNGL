@@ -1,5 +1,7 @@
-#version 460
-out vec3 color;
+#version 330
+in vec2 tc;
+layout (location = 0) out vec4 out_col;
+
 void main() {
-  color = vec3(1, 0, 0);
+  out_col = vec4(tc,0,1);
 }

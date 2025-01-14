@@ -2,6 +2,7 @@ package dev.erdragh.context
 
 import cnames.structs.GLFWwindow
 import dev.erdragh.GL
+import dev.erdragh.debug.Quad
 import glew.*
 import glfw.*
 import kotlinx.cinterop.CPointer
@@ -68,6 +69,7 @@ object Context {
     }
 
     private fun uninit() {
+        Quad.cleanup()
         println("Resetting GLFW Input Mode")
         glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL)
         println("Terminating GLFW")
