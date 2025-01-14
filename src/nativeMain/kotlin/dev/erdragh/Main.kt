@@ -1,5 +1,6 @@
 package dev.erdragh
 
+import dev.erdragh.context.Context
 import glew.*
 import glfw.*
 import kotlinx.cinterop.ExperimentalForeignApi
@@ -8,32 +9,7 @@ import okio.Path.Companion.toPath
 
 @OptIn(ExperimentalForeignApi::class)
 fun main(args: Array<String>) {
-
-    if (glfwInit() == 0) {
-        throw RuntimeException("Failed to initialize GLFW")
-    }
-
-    glfwWindowHint(GLFW_SAMPLES, 4)
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4)
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6)
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE)
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE)
-
-    val window = glfwCreateWindow(1280, 720, "Test", null, null)
-    if (window == null) {
-        glfwTerminate()
-        throw RuntimeException("Failed to create the GLFW window")
-    }
-
-    glfwMakeContextCurrent(window)
-
-    if (glewInit().toInt() != GLEW_OK) {
-        glfwTerminate()
-        throw RuntimeException("Failed to initialize GLEW")
-    }
-
-    glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE)
-    glClearColor(0f, 0f, 0.4f, 1f)
+    Context.init()
 
     val vertexArrayId = GL.genVertexArrays(1)
     GL.bindVertexArray(vertexArrayId)
@@ -56,14 +32,14 @@ fun main(args: Array<String>) {
 
         glUseProgram!!(0u)
 
-        glfwSwapBuffers(window)
+        glfwSwapBuffers(Context.glfwWindow)
         glfwPollEvents()
-    } while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
-        glfwWindowShouldClose(window) == 0)
+    } while (glfwGetKey(Context.glfwWindow, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
+        glfwWindowShouldClose(Context.glfwWindow) == 0)
 
     GL.deleteBuffers(1, buffer)
     GL.deleteVertexArrays(1, vertexArrayId)
     glDeleteProgram!!(programId)
 
-    glfwTerminate()
+    Context.uninit()
 }

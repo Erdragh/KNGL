@@ -63,4 +63,6 @@ object GL {
 
         result.value
     }
+
+    fun getString(what: UInt) = glGetString(what)?.reinterpret<ByteVar>()?.toKString()
 }

@@ -25,14 +25,13 @@ kotlin {
     nativeTarget.apply {
         compilations.getByName("main") {
             cinterops {
-                val libcurl by creating
                 val glfw by creating
-                val gl by creating
                 val glew by creating
             }
         }
         binaries {
             executable {
+                debuggable = true
                 entryPoint = "dev.erdragh.main"
             }
         }
