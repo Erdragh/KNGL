@@ -8,30 +8,44 @@ import glfw.*
 import kotlinx.cinterop.*
 import platform.posix.stderr
 
-@OptIn(ExperimentalForeignApi::class)
-private fun keyCallback(window: CPointer<GLFWwindow>?, key: Int, scandcode: Int, action: Int, mods: Int) {
-    if (key == GLFW_KEY_ESCAPE)
-        glfwSetWindowShouldClose(window, 1)
-}
-@OptIn(ExperimentalForeignApi::class)
-private fun mouseCallback(window: CPointer<GLFWwindow>?, x: Double, y: Double) {
-}
-@OptIn(ExperimentalForeignApi::class)
-private fun mouseButtonCallback(window: CPointer<GLFWwindow>?, button: Int, action: Int, mods: Int) {
-}
-@OptIn(ExperimentalForeignApi::class)
-private fun mouseScrollCallback(window: CPointer<GLFWwindow>?, x: Double, y: Double) {
-}
-@OptIn(ExperimentalForeignApi::class)
-private fun resizeCallback(window: CPointer<GLFWwindow>?, w: Int, h: Int) {
-    glViewport(0, 0, w, h)
-}
-@OptIn(ExperimentalForeignApi::class)
-private fun charCallback(window: CPointer<GLFWwindow>?, c: UInt) {
+private fun callbackSafe(action: () -> Unit) {
+    try {
+        action()
+    } catch (e: Throwable) {
+        e.printStackTrace()
+    }
 }
 
 @OptIn(ExperimentalForeignApi::class)
-fun debugCallback(source: GLenum, type: GLenum, id: GLuint, severity: GLenum, length: GLsizei, message: CPointer<GLcharVar>?, userProgram: COpaquePointer?) {
+private fun keyCallback(window: CPointer<GLFWwindow>?, key: Int, scandcode: Int, action: Int, mods: Int) = callbackSafe {
+    if (key == GLFW_KEY_ESCAPE)
+        glfwSetWindowShouldClose(window, 1)
+    Context.userKeyCallback?.let { it(key, scandcode, action, mods) }
+}
+@OptIn(ExperimentalForeignApi::class)
+private fun mouseCallback(window: CPointer<GLFWwindow>?, x: Double, y: Double) = callbackSafe {
+    Context.userMouseCallback?.let { it(x, y) }
+}
+@OptIn(ExperimentalForeignApi::class)
+private fun mouseButtonCallback(window: CPointer<GLFWwindow>?, button: Int, action: Int, mods: Int) = callbackSafe {
+    Context.userMouseButtonCallback?.let { it(button, action, mods) }
+}
+@OptIn(ExperimentalForeignApi::class)
+private fun mouseScrollCallback(window: CPointer<GLFWwindow>?, x: Double, y: Double) = callbackSafe {
+    Context.userMouseScrollCallback?.let { it(x, y) }
+}
+@OptIn(ExperimentalForeignApi::class)
+private fun resizeCallback(window: CPointer<GLFWwindow>?, w: Int, h: Int) = callbackSafe {
+    glViewport(0, 0, w, h)
+    Context.userResizeCallback?.let { it(w, h) }
+}
+@OptIn(ExperimentalForeignApi::class)
+private fun charCallback(window: CPointer<GLFWwindow>?, c: UInt) = callbackSafe {
+    Context.userCharCallback?.let { it(c) }
+}
+
+@OptIn(ExperimentalForeignApi::class)
+private fun debugCallback(source: GLenum, type: GLenum, id: GLuint, severity: GLenum, length: GLsizei, message: CPointer<GLcharVar>?, userProgram: COpaquePointer?) {
     val src = when (source.toInt()) {
         GL_DEBUG_SOURCE_API -> "API"
         GL_DEBUG_SOURCE_WINDOW_SYSTEM -> "WINDOW_SYSTEM"
@@ -77,7 +91,13 @@ object Context {
         return ret
     }
 
-    var glfwWindow: CPointer<GLFWwindow>? = null
+    private var glfwWindow: CPointer<GLFWwindow>? = null
+    var userKeyCallback: ((key: Int, scandcode: Int, action: Int, mods: Int) -> Unit)? = null
+    var userMouseCallback: ((x: Double, y: Double) -> Unit)? = null
+    var userMouseButtonCallback: ((button: Int, action: Int, mods: Int) -> Unit)? = null
+    var userMouseScrollCallback: ((x: Double, y: Double) -> Unit)? = null
+    var userResizeCallback: ((w: Int, h: Int) -> Unit)? = null
+    var userCharCallback: ((c: UInt) -> Unit)? = null
 
     private fun init() {
         if (glfwInit() == null)
