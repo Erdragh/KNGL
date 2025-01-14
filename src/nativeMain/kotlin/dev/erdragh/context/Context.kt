@@ -67,4 +67,15 @@ object Context {
         glfwTerminate()
         println("Successfully terminated Context")
     }
+
+    fun swapBuffers() {
+        glfwSwapBuffers(glfwWindow)
+        glfwPollEvents()
+    }
+
+    fun show() = glfwShowWindow(glfwWindow)
+    fun hide() = glfwHideWindow(glfwWindow)
+
+    val running: Boolean
+        get() = glfwWindowShouldClose(glfwWindow) == 0
 }
