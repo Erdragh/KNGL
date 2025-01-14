@@ -32,18 +32,18 @@ object GL {
         glDeleteBuffers!!(p1, id.ptr)
     }
     fun bufferData(type: GLenum, data: FloatArray, hint: GLenum) = memScoped {
-        val allocated = allocArray<FloatVar>(data.size)
+        val allocated = allocArray<FloatVar>(data.size * Float.SIZE_BYTES)
         for ((i, x) in data.withIndex()) {
             allocated[i] = x
         }
-        glBufferData!!(type, data.size.toLong(), allocated, hint)
+        glBufferData!!(type, data.size * Float.SIZE_BYTES.toLong(), allocated, hint)
     }
     fun bufferData(type: GLenum, data: UIntArray, hint: GLenum) = memScoped {
-        val allocated = allocArray<UIntVar>(data.size)
+        val allocated = allocArray<UIntVar>(data.size * UInt.SIZE_BYTES)
         for ((i, x) in data.withIndex()) {
             allocated[i] = x
         }
-        glBufferData!!(type, data.size.toLong(), allocated, hint)
+        glBufferData!!(type, data.size * UInt.SIZE_BYTES.toLong(), allocated, hint)
     }
 
     fun shaderSource(id: UInt, p2: Int, source: ByteString) = memScoped {
