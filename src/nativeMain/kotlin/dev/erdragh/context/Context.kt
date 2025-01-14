@@ -10,9 +10,16 @@ import kotlinx.cinterop.toKString
 
 @OptIn(ExperimentalForeignApi::class)
 object Context {
+    fun <T> initialized(action: Context.() -> T): T {
+        init()
+        val ret = action()
+        uninit()
+        return ret
+    }
+
     var glfwWindow: CPointer<GLFWwindow>? = null
 
-    fun init() {
+    private fun init() {
         if (glfwInit() == null)
             throw RuntimeException("Failed to initialize GLFW")
 
@@ -60,7 +67,7 @@ object Context {
         glClearDepth(1.0)
     }
 
-    fun uninit() {
+    private fun uninit() {
         println("Resetting GLFW Input Mode")
         glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL)
         println("Terminating GLFW")

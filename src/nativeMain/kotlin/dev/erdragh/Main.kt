@@ -7,13 +7,9 @@ import glew.glClear
 import kotlinx.cinterop.ExperimentalForeignApi
 
 @OptIn(ExperimentalForeignApi::class)
-fun main(args: Array<String>) {
-    Context.init()
-    
-    while (Context.running) {
+fun main(args: Array<String>) = Context.initialized {
+    while (running) {
         glClear((GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT).toUInt())
-        Context.swapBuffers()
+        swapBuffers()
     }
-
-    Context.uninit()
 }
