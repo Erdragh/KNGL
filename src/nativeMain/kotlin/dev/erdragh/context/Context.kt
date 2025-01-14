@@ -9,6 +9,28 @@ import kotlinx.cinterop.*
 import platform.posix.stderr
 
 @OptIn(ExperimentalForeignApi::class)
+private fun keyCallback(window: CPointer<GLFWwindow>?, key: Int, scandcode: Int, action: Int, mods: Int) {
+    if (key == GLFW_KEY_ESCAPE)
+        glfwSetWindowShouldClose(window, 1)
+}
+@OptIn(ExperimentalForeignApi::class)
+private fun mouseCallback(window: CPointer<GLFWwindow>?, x: Double, y: Double) {
+}
+@OptIn(ExperimentalForeignApi::class)
+private fun mouseButtonCallback(window: CPointer<GLFWwindow>?, button: Int, action: Int, mods: Int) {
+}
+@OptIn(ExperimentalForeignApi::class)
+private fun mouseScrollCallback(window: CPointer<GLFWwindow>?, x: Double, y: Double) {
+}
+@OptIn(ExperimentalForeignApi::class)
+private fun resizeCallback(window: CPointer<GLFWwindow>?, w: Int, h: Int) {
+    glViewport(0, 0, w, h)
+}
+@OptIn(ExperimentalForeignApi::class)
+private fun charCallback(window: CPointer<GLFWwindow>?, c: UInt) {
+}
+
+@OptIn(ExperimentalForeignApi::class)
 fun debugCallback(source: GLenum, type: GLenum, id: GLuint, severity: GLenum, length: GLsizei, message: CPointer<GLcharVar>?, userProgram: COpaquePointer?) {
     val src = when (source.toInt()) {
         GL_DEBUG_SOURCE_API -> "API"
@@ -94,6 +116,15 @@ object Context {
         // TODO: Find out how to replace null with this
         glfwSetWindowUserPointer(glfwWindow, null)
 
+        // setup callbacks
+        glfwSetKeyCallback(glfwWindow, staticCFunction(::keyCallback))
+        glfwSetCursorPosCallback(glfwWindow, staticCFunction(::mouseCallback))
+        glfwSetMouseButtonCallback(glfwWindow, staticCFunction(::mouseButtonCallback))
+        glfwSetScrollCallback(glfwWindow, staticCFunction(::mouseScrollCallback))
+        glfwSetFramebufferSizeCallback(glfwWindow, staticCFunction(::resizeCallback))
+        glfwSetCharCallback(glfwWindow, staticCFunction(::charCallback))
+
+        // set input mode
         glfwSetInputMode(glfwWindow, GLFW_STICKY_KEYS, 1)
         glfwSetInputMode(glfwWindow, GLFW_STICKY_MOUSE_BUTTONS, 1)
 
