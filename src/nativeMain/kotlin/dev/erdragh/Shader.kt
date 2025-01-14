@@ -56,6 +56,9 @@ class Shader(val name: String) {
         compile()
     }
 
+    fun bind() = glUseProgram!!(id)
+    fun unbind() = glUseProgram!!(0u)
+
     private fun setVertexSource(path: Path) = setSource(GL_VERTEX_SHADER.toUInt(), path)
     private fun setGeometrySource(path: Path) = setSource(GL_GEOMETRY_SHADER.toUInt(), path)
     private fun setFragmentSource(path: Path) = setSource(GL_FRAGMENT_SHADER.toUInt(), path)
