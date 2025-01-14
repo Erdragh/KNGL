@@ -1,10 +1,12 @@
 package dev.erdragh.kngl
 
+import dev.erdragh.kngl.math.Vec3i
 import glew.*
 import kotlinx.cinterop.*
 import okio.BufferedSource
 import okio.FileSystem
 import okio.Path
+import kotlin.math.ceil
 
 @OptIn(ExperimentalForeignApi::class)
 private fun compileShader(type: GLenum, sources: Map<GLenum, Path>): GLuint {
@@ -124,7 +126,13 @@ class Shader(val name: String) {
     }
 
     fun dispatchCompute(width: UInt, height: UInt = 1u, depth: UInt = 1u, memoryBarrierBits: GLbitfield = GL_ALL_BARRIER_BITS) {
-        TODO()
+        val size = Vec3i(0)
+        size.repr.toIntArray().usePinned { pinned ->
+            glGetProgramiv!!(id, GL_COMPUTE_WORK_GROUP_SIZE.toUInt(), pinned.addressOf(0))
+        }
+        glDispatchCompute!!(ceil(width.toFloat() / size.x).toUInt(), ceil(height.toFloat() / size.y).toUInt(), ceil(depth.toFloat() / size.z).toUInt())
+        if (memoryBarrierBits != 0u)
+            glMemoryBarrier!!(memoryBarrierBits)
     }
 
     // Uniforms
