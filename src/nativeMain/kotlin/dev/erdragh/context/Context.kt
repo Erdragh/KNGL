@@ -5,9 +5,46 @@ import dev.erdragh.GL
 import dev.erdragh.debug.Quad
 import glew.*
 import glfw.*
-import kotlinx.cinterop.CPointer
-import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.cinterop.toKString
+import kotlinx.cinterop.*
+import platform.posix.stderr
+
+@OptIn(ExperimentalForeignApi::class)
+fun debugCallback(source: GLenum, type: GLenum, id: GLuint, severity: GLenum, length: GLsizei, message: CPointer<GLcharVar>?, userProgram: COpaquePointer?) {
+    val src = when (source.toInt()) {
+        GL_DEBUG_SOURCE_API -> "API"
+        GL_DEBUG_SOURCE_WINDOW_SYSTEM -> "WINDOW_SYSTEM"
+        GL_DEBUG_SOURCE_SHADER_COMPILER -> "SHADER_COMPILER"
+        GL_DEBUG_SOURCE_THIRD_PARTY -> "THIRD_PARTY"
+        GL_DEBUG_SOURCE_APPLICATION -> "APPLICATION"
+        GL_DEBUG_SOURCE_OTHER -> "OTHER"
+        else -> "UNKNOWN"
+    }
+
+    val typ = when (type.toInt()) {
+        GL_DEBUG_TYPE_ERROR -> "ERROR"
+        GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR -> "DEPRECATED_BEHAVIOR"
+        GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR -> "UNDEFINED_BEHAVIOR"
+        GL_DEBUG_TYPE_PORTABILITY -> "PORTABILITY"
+        GL_DEBUG_TYPE_PERFORMANCE -> "PERFORMANCE"
+        GL_DEBUG_TYPE_OTHER -> "OTHER"
+        GL_DEBUG_TYPE_MARKER -> "MARKER"
+        GL_DEBUG_TYPE_PUSH_GROUP -> "PUSH_GROUP"
+        GL_DEBUG_TYPE_POP_GROUP -> "POP_GROUP"
+        else -> "UNKNOWN"
+    }
+
+    val sev = when (severity.toInt()) {
+        GL_DEBUG_SEVERITY_NOTIFICATION -> "NOTIFICATION"
+        GL_DEBUG_SEVERITY_LOW -> "LOW"
+        GL_DEBUG_SEVERITY_MEDIUM -> "MEDIUM"
+        GL_DEBUG_SEVERITY_HIGH -> "HIGH"
+        else -> "UNKNOWN"
+    }
+
+    memScoped {
+        platform.posix.fprintf(stderr, "GL_DEBUG: Severity: %s, Source: %s, Type: %s.\nMessage: %s\n", sev.cstr.ptr, src.cstr.ptr, typ.cstr.ptr, message)
+    }
+}
 
 @OptIn(ExperimentalForeignApi::class)
 object Context {
@@ -51,7 +88,7 @@ object Context {
         println("OpenGL: ${GL.getString(GL_VERSION.toUInt())}, ${GL.getString(GL_RENDERER.toUInt())}")
         println("GLSL: ${GL.getString(GL_SHADING_LANGUAGE_VERSION.toUInt())}")
 
-        // TODO: debugging output
+        enableGLDebugOutput()
 
         // TODO: Find out how to replace null with this
         glfwSetWindowUserPointer(glfwWindow, null)
@@ -87,4 +124,14 @@ object Context {
 
     val running: Boolean
         get() = glfwWindowShouldClose(glfwWindow) == 0
+
+    private fun enableGLDebugOutput() {
+        glEnable(GL_DEBUG_OUTPUT.toUInt())
+        glDebugMessageCallback!!(staticCFunction(::debugCallback), null)
+        disableGLNotifications()
+    }
+
+    private fun disableGLNotifications() {
+        glDebugMessageControl!!(GL_DEBUG_SOURCE_API.toUInt(), GL_DEBUG_TYPE_OTHER.toUInt(), GL_DEBUG_SEVERITY_NOTIFICATION.toUInt(), 0, null, GL_FALSE.toUByte())
+    }
 }
