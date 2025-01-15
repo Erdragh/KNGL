@@ -14,12 +14,9 @@ class Vec3<T : Number> {
         this.array = array
     }
 
-    val x: T
-        get() = array[0]
-    val y: T
-        get() = array[1]
-    val z: T
-        get() = array[2]
+    val x get() = array[0]
+    val y get() = array[1]
+    val z get() = array[2]
 
     val r get() = x
     val g get() = y

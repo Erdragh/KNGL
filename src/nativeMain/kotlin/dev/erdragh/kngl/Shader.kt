@@ -1,6 +1,6 @@
 package dev.erdragh.kngl
 
-import dev.erdragh.kngl.math.Vec3i
+import dev.erdragh.kngl.math.*
 import glew.*
 import kotlinx.cinterop.*
 import okio.BufferedSource
@@ -135,7 +135,7 @@ class Shader(val name: String) {
             glMemoryBarrier!!(memoryBarrierBits)
     }
 
-    // Uniforms
+    // Scalar Uniforms
     fun uniform(name: String, value: Int) = memScoped {
         val loc = glGetUniformLocation!!(id, name.cstr.ptr)
         glUniform1i!!(loc, value)
@@ -169,5 +169,32 @@ class Shader(val name: String) {
         }
     }
 
-    // TODO: Vector uniforms
+    // Vector uniforms
+    fun uniform(name: String, value: Vec2f) = memScoped {
+        val loc = glGetUniformLocation!!(id, name.cstr.ptr)
+        glUniform2f!!(loc, value.x, value.y)
+    }
+    fun uniform(name: String, value: Vec3f) = memScoped {
+        val loc = glGetUniformLocation!!(id, name.cstr.ptr)
+        glUniform3f!!(loc, value.x, value.y, value.z)
+    }
+    fun uniform(name: String, value: Vec4f) = memScoped {
+        val loc = glGetUniformLocation!!(id, name.cstr.ptr)
+        glUniform4f!!(loc, value.x, value.y, value.z, value.w)
+    }
+
+    fun uniform(name: String, value: Vec2i) = memScoped {
+        val loc = glGetUniformLocation!!(id, name.cstr.ptr)
+        glUniform2i!!(loc, value.x, value.y)
+    }
+    fun uniform(name: String, value: Vec3i) = memScoped {
+        val loc = glGetUniformLocation!!(id, name.cstr.ptr)
+        glUniform3i!!(loc, value.x, value.y, value.z)
+    }
+    fun uniform(name: String, value: Vec4i) = memScoped {
+        val loc = glGetUniformLocation!!(id, name.cstr.ptr)
+        glUniform4i!!(loc, value.x, value.y, value.z, value.w)
+    }
+
+    // TODO: Matrix uniforms
 }
