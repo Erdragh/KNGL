@@ -45,18 +45,23 @@ class Shader(val name: String) {
     constructor(name: String, compute: Path) : this(name) {
         setComputeSource(compute)
         compile()
+        registerNamed(name, this)
     }
     constructor(name: String, vertex: Path, fragment: Path) : this(name) {
         setVertexSource(vertex)
         setFragmentSource(fragment)
         compile()
+        registerNamed(name, this)
     }
     constructor(name: String, vertex: Path, geometry: Path, fragment: Path) : this(name) {
         setVertexSource(vertex)
         setGeometrySource(geometry)
         setFragmentSource(fragment)
         compile()
+        registerNamed(name, this)
     }
+
+    companion object : Named<Shader>()
 
     fun bind() = glUseProgram!!(id)
     fun unbind() = glUseProgram!!(0u)
