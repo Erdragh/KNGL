@@ -46,6 +46,18 @@ object GL {
         glBufferData!!(type, data.size * UInt.SIZE_BYTES.toLong(), allocated, hint)
     }
 
+    // Texture
+    fun genTextures(p1: GLsizei): UInt = memScoped {
+        val id = alloc<UIntVar>()
+        glGenTextures(p1, id.ptr)
+        id.value
+    }
+    fun deleteTextures(p1: GLsizei, texId: UInt) = memScoped {
+        val id = alloc<UIntVar>()
+        id.value = texId
+        glDeleteTextures(p1, id.ptr)
+    }
+
     fun shaderSource(id: UInt, p2: Int, source: ByteString) = memScoped {
         source.toByteArray().usePinned { pinned ->
             val doublePointer = alloc<CPointerVar<ByteVar>>()
